@@ -1,14 +1,23 @@
+require('dotenv').config();
 const express = require('express');
+const mongoose = require('mongoose');
 const cors = require('cors');
+
 const app = express();
 
-app.use(cors());
-app.use(express.json());
 
-// สร้าง Route แรกไว้ทดสอบ
+app.use(express.json());
+app.use(cors());
+app.use('/api', require('./routes/auth'));
+
+// เชื่อมต่อ Database
+mongoose.connect(process.env.MONGO_URI)
+    .then(() => console.log("✅ MongoDB Connected Successfully!"))
+    .catch((err) => console.log("❌ MongoDB Connection Error:", err));
+
 app.get('/', (req, res) => {
-    res.send('Hello from Exam Hub API');
+    res.send('API is running...');
 });
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
